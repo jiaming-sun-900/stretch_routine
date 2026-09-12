@@ -41,39 +41,25 @@
   h1{
     font-family:'Fraunces', serif;
     font-weight:600;
-    font-size:1.7rem;
+    font-size:2.1rem;
     margin:0 0 4px;
     letter-spacing:0.2px;
     color:#1F1B15;
   }
-  .subtitle{color:var(--text-muted);font-size:0.92rem;margin:0 0 22px;line-height:1.5;}
-
-  .streakbar{
-    display:flex;justify-content:space-between;align-items:center;
-    background:var(--surface);border:2px solid var(--line);
-    border-radius:14px;padding:14px 16px;margin-bottom:20px;
-    box-shadow:var(--shadow-sm);
-  }
-  .streakbar .num{font-family:'IBM Plex Mono',monospace;font-size:1.35rem;color:var(--accent);font-weight:600;transition:transform .25s cubic-bezier(.34,1.56,.64,1);display:inline-block;}
-  .streakbar .num.bump{transform:scale(1.35);}
-  .streakbar .lbl{font-size:0.78rem;color:var(--text-muted);}
-  .streakbar .col{text-align:center;flex:1;position:relative;}
-  .streakbar .col:not(:last-child)::after{
-    content:"";position:absolute;right:0;top:2px;bottom:2px;width:1px;background:var(--line);
-  }
+  .subtitle{color:var(--text);font-size:0.875rem;margin:0 0 22px;line-height:1.5;}
 
   .painbox{
     background:var(--pain-soft);border:2px solid var(--pain);
     border-radius:14px;padding:14px 16px;margin-bottom:22px;
   }
-  .painbox .pt{font-weight:600;color:var(--pain);margin-bottom:6px;font-size:0.95rem;}
-  .painbox p{margin:0 0 8px;font-size:0.87rem;line-height:1.55;color:var(--text);}
+  .painbox .pt{font-weight:600;color:var(--pain);margin-bottom:6px;font-size:1rem;}
+  .painbox p{margin:0 0 8px;font-size:0.875rem;line-height:1.55;color:var(--text);}
   .painbox p:last-child{margin-bottom:0;}
 
   .tabs{display:flex;gap:4px;background:var(--surface);border:2px solid var(--line);border-radius:999px;padding:4px;margin-bottom:20px;box-shadow:var(--shadow-sm);position:relative;}
   .tab{
     flex:1;text-align:center;padding:10px 10px;border-radius:999px;
-    font-size:0.86rem;color:var(--text-muted);cursor:pointer;user-select:none;
+    font-size:0.9rem;color:var(--text);cursor:pointer;user-select:none;
     transition:color .25s;position:relative;z-index:1;
   }
   .tab.active{color:var(--accent-ink);font-weight:600;}
@@ -87,7 +73,7 @@
   }
   .tab-indicator.pos-1{transform:translateX(100%);}
 
-  .section-note{font-size:0.82rem;color:var(--text-muted);margin:0 0 14px;line-height:1.5;}
+  .section-note{font-size:0.875rem;color:var(--text);margin:0 0 14px;line-height:1.5;}
 
   #cardList{
     display:grid;
@@ -105,8 +91,9 @@
     animation:cardIn .35s ease both;
     display:flex;
     min-height:158px;
+    cursor:pointer;
   }
-  .card:hover{box-shadow:var(--shadow-md);transform:translateY(-1px);}
+  .card:hover{box-shadow:var(--shadow-md);transform:translateY(-1px);border-color:var(--good);}
   .card.done{border-color:var(--good);background:var(--good-soft);}
   @keyframes cardIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
 
@@ -124,8 +111,8 @@
   @keyframes checkPop{0%{transform:scale(0.6);}60%{transform:scale(1.2);}100%{transform:scale(1);}}
 
   .card-body{flex:1;}
-  .name{font-weight:600;font-size:0.98rem;margin:0 0 2px;color:#1F1B15;}
-  .desc{font-size:0.85rem;color:var(--text-muted);line-height:1.5;margin:2px 0 10px;}
+  .name{font-weight:600;font-size:1rem;margin:0 0 2px;color:#1F1B15;}
+  .desc{font-size:0.875rem;color:var(--text);line-height:1.5;margin:2px 0 10px;}
   .controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:auto;min-height:40px;}
   .timer{
     font-family:'IBM Plex Mono',monospace;font-size:1.15rem;font-weight:600;
@@ -136,7 +123,7 @@
 
   .btn{
     background:var(--surface-alt);border:2px solid var(--line);color:var(--text);
-    padding:7px 14px;border-radius:9px;font-size:0.8rem;cursor:pointer;
+    padding:7px 14px;border-radius:9px;font-size:0.875rem;cursor:pointer;
     font-family:inherit;font-weight:500;
     transition:transform .12s cubic-bezier(.34,1.56,.64,1), box-shadow .15s, border-color .15s, background .15s;
     position:relative;outline:none;-webkit-tap-highlight-color:transparent;
@@ -152,6 +139,16 @@
   .btn.primary:hover{box-shadow:0 6px 16px rgba(201,111,74,0.42);transform:translateY(-2px);}
   .btn.primary:active{transform:translateY(0) scale(0.95);box-shadow:0 2px 6px rgba(201,111,74,0.3);}
   .btn.primary:disabled{opacity:0.5;cursor:default;transform:none;box-shadow:none;}
+  .btn.danger{
+    background:linear-gradient(135deg, #C9634A, var(--pain));
+    color:#fff;border-color:transparent;font-weight:600;
+    box-shadow:0 4px 12px rgba(181,83,58,0.28);
+  }
+  .btn.danger:hover{box-shadow:0 6px 16px rgba(181,83,58,0.4);transform:translateY(-2px);}
+  .btn.danger:active{transform:translateY(0) scale(0.95);box-shadow:0 2px 6px rgba(181,83,58,0.28);}
+
+  .clearwrap{display:flex;justify-content:center;margin-top:26px;}
+  .btn.large{padding:12px 32px;font-size:0.95rem;border-radius:12px;}
 
   .playpad{
     display:flex;align-items:center;gap:6px;
@@ -175,8 +172,8 @@
   .playpad .btn.icon.reset:hover{color:var(--accent);border-color:var(--accent);}
 
   .vidlink{
-    font-size:0.78rem;color:var(--text-muted);text-decoration:none;
-    border-bottom:2px dotted var(--text-muted);margin-left:auto;
+    font-size:0.875rem;color:var(--text);text-decoration:none;
+    border-bottom:2px dotted var(--text);margin-left:auto;
     transition:color .15s, border-color .15s, transform .15s;
     display:inline-block;
   }
@@ -189,12 +186,6 @@
 
   <h1>肩颈背腿放松计划</h1>
   <p class="subtitle">给久坐打字的你：碎片时间放松和完整全身放松两套动作，都带计时器，做完打勾就行。</p>
-
-  <div class="streakbar">
-    <div class="col"><div class="num" id="streakNum">0</div><div class="lbl">连续天数</div></div>
-    <div class="col"><div class="num" id="todayNum">0</div><div class="lbl">今日已完成</div></div>
-    <div class="col"><div class="num" id="totalNum">0</div><div class="lbl">累计完成次数</div></div>
-  </div>
 
   <div class="painbox">
     <div class="pt">右肩胛骨内侧痛点，单独处理</div>
@@ -210,6 +201,10 @@
   <p class="section-note" id="sectionNote"></p>
 
   <div id="cardList"></div>
+
+  <div class="clearwrap">
+    <button class="btn danger large" id="clearTabBtn">一键清空</button>
+  </div>
 </div>
 
 <script>
@@ -241,8 +236,11 @@ const NOTES = {
 const TAB_ORDER = ["quick", "full"];
 let currentTab = "quick";
 let timers = {};
-let todayKey = new Date().toISOString().slice(0,10);
-let state = { history: {}, total: 0 };
+function localDateKey(d){
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
+let todayKey = localDateKey(new Date());
+let state = { history: {} };
 
 function fmt(s){
   const m = Math.floor(s/60).toString().padStart(2,"0");
@@ -256,7 +254,6 @@ function loadState(){
     if(raw) state = JSON.parse(raw);
   }catch(e){ /* no existing state yet */ }
   if(!state.history) state.history = {};
-  if(typeof state.total !== "number") state.total = 0;
   render();
 }
 
@@ -273,45 +270,18 @@ function isDoneToday(id){
 function toggleDone(id){
   if(!state.history[todayKey]) state.history[todayKey] = {};
   const day = state.history[todayKey];
-  if(day[id]){
-    delete day[id];
-    state.total = Math.max(0, state.total - 1);
-  } else {
-    day[id] = true;
-    state.total += 1;
-  }
+  if(day[id]) delete day[id];
+  else day[id] = true;
   saveState();
-  render();
+  setCardDone(id, !!day[id]);
 }
 
-function computeStreak(){
-  let streak = 0;
-  let d = new Date();
-  while(true){
-    const key = d.toISOString().slice(0,10);
-    const day = state.history[key];
-    const hasAny = day && Object.keys(day).length > 0;
-    if(hasAny){ streak++; d.setDate(d.getDate()-1); }
-    else break;
-  }
-  return streak;
-}
-
-function bumpNum(el, value){
-  const changed = el.textContent !== String(value);
-  el.textContent = value;
-  if(changed){
-    el.classList.remove("bump");
-    void el.offsetWidth;
-    el.classList.add("bump");
-  }
-}
-
-function renderStats(){
-  const todayDone = state.history[todayKey] ? Object.keys(state.history[todayKey]).length : 0;
-  bumpNum(document.getElementById("todayNum"), todayDone);
-  bumpNum(document.getElementById("streakNum"), computeStreak());
-  bumpNum(document.getElementById("totalNum"), state.total);
+function setCardDone(id, done){
+  const check = document.querySelector('.check[data-id="'+id+'"]');
+  if(!check) return;
+  const card = check.closest(".card");
+  card.classList.toggle("done", done);
+  check.textContent = done ? "✓" : "";
 }
 
 function startTimer(item){
@@ -364,6 +334,19 @@ function updateTimerDisplay(id, finished){
   if(finished){ el.style.color = "var(--good)"; setTimeout(()=>{ el.style.color=""; },1500); }
 }
 
+function clearTabToday(){
+  const list = DATA[currentTab];
+  const day = state.history[todayKey];
+  if(!day) return;
+  list.forEach(item=>{
+    if(day[item.id]){
+      delete day[item.id];
+      setCardDone(item.id, false);
+    }
+  });
+  saveState();
+}
+
 function renderList(){
   const list = DATA[currentTab];
   document.getElementById("sectionNote").textContent = NOTES[currentTab];
@@ -373,9 +356,12 @@ function renderList(){
     const done = isDoneToday(item.id);
     const card = document.createElement("div");
     card.className = "card" + (done ? " done" : "");
+    card.dataset.id = item.id;
     card.style.animationDelay = (idx * 0.04) + "s";
     const hasTimer = item.seconds > 0;
-    const running = !!(timers[item.id] && timers[item.id].running);
+    const t = timers[item.id];
+    const running = !!(t && t.running);
+    const displaySeconds = t ? t.remaining : item.seconds;
     card.innerHTML =
       '<div class="card-top">' +
         '<div class="check" data-id="'+item.id+'">'+(done ? "✓" : "")+'</div>' +
@@ -384,7 +370,7 @@ function renderList(){
           '<p class="desc">'+item.reps+'</p>' +
           '<div class="controls">' +
             (hasTimer ?
-              '<span class="timer" data-id="'+item.id+'">'+fmt(item.seconds)+'</span>' +
+              '<span class="timer' + (running ? " running" : "") + '" data-id="'+item.id+'">'+fmt(displaySeconds)+'</span>' +
               '<div class="playpad">' +
                 '<button class="btn icon toggle" data-action="toggle" data-id="'+item.id+'">'+(running ? "⏸" : "▶")+'</button>' +
                 '<button class="btn icon reset" data-action="reset" data-id="'+item.id+'">🔄</button>' +
@@ -397,8 +383,11 @@ function renderList(){
     container.appendChild(card);
   });
 
-  container.querySelectorAll(".check").forEach(el=>{
-    el.addEventListener("click", ()=> toggleDone(el.dataset.id));
+  container.querySelectorAll(".card").forEach(card=>{
+    card.addEventListener("click", (e)=>{
+      if(e.target.closest("button, a")) return;
+      toggleDone(card.dataset.id);
+    });
   });
   container.querySelectorAll('[data-action="toggle"]').forEach(btn=>{
     btn.addEventListener("click", ()=>{
@@ -415,7 +404,6 @@ function renderList(){
 }
 
 function render(){
-  renderStats();
   renderList();
 }
 
@@ -429,6 +417,8 @@ document.querySelectorAll(".tab").forEach(tab=>{
     renderList();
   });
 });
+
+document.getElementById("clearTabBtn").addEventListener("click", clearTabToday);
 
 loadState();
 </script>
