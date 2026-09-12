@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>肩颈背腿放松计划</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F7F4EC;
+    --surface:#FFFFFF;
+    --surface-alt:#F0EBDF;
+    --line:#E5DFD0;
+    --text:#2B2620;
+    --text-muted:#8A8171;
+    --accent:#C96F4A;
+    --accent-light:#E08A62;
+    --accent-ink:#FFFFFF;
+    --good:#6B8F71;
+    --good-soft:#6B8F711A;
+    --pain:#B5533A;
+    --pain-soft:#B5533A12;
+    --shadow-sm:0 1px 2px rgba(43,38,32,0.06);
+    --shadow-md:0 6px 16px rgba(43,38,32,0.08);
+    --shadow-lg:0 12px 28px rgba(43,38,32,0.14);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(circle at 15% 0%, #F9EEE1 0%, transparent 45%),
+      radial-gradient(circle at 100% 20%, #EFEADA 0%, transparent 40%),
+      var(--bg);
+    color:var(--text);
+    font-family:'IBM Plex Sans', -apple-system, sans-serif;
+    padding:28px 16px 60px;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  .wrap{max-width:1000px;margin:0 auto;}
+  h1{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:1.7rem;
+    margin:0 0 4px;
+    letter-spacing:0.2px;
+    color:#1F1B15;
+  }
+  .subtitle{color:var(--text-muted);font-size:0.92rem;margin:0 0 22px;line-height:1.5;}
+
+  .streakbar{
+    display:flex;justify-content:space-between;align-items:center;
+    background:var(--surface);border:2px solid var(--line);
+    border-radius:14px;padding:14px 16px;margin-bottom:20px;
+    box-shadow:var(--shadow-sm);
+  }
+  .streakbar .num{font-family:'IBM Plex Mono',monospace;font-size:1.35rem;color:var(--accent);font-weight:600;transition:transform .25s cubic-bezier(.34,1.56,.64,1);display:inline-block;}
+  .streakbar .num.bump{transform:scale(1.35);}
+  .streakbar .lbl{font-size:0.78rem;color:var(--text-muted);}
+  .streakbar .col{text-align:center;flex:1;position:relative;}
+  .streakbar .col:not(:last-child)::after{
+    content:"";position:absolute;right:0;top:2px;bottom:2px;width:1px;background:var(--line);
+  }
+
+  .painbox{
+    background:var(--pain-soft);border:2px solid var(--pain);
+    border-radius:14px;padding:14px 16px;margin-bottom:22px;
+  }
+  .painbox .pt{font-weight:600;color:var(--pain);margin-bottom:6px;font-size:0.95rem;}
+  .painbox p{margin:0 0 8px;font-size:0.87rem;line-height:1.55;color:var(--text);}
+  .painbox p:last-child{margin-bottom:0;}
+
+  .tabs{display:flex;gap:4px;background:var(--surface);border:2px solid var(--line);border-radius:999px;padding:4px;margin-bottom:20px;box-shadow:var(--shadow-sm);position:relative;}
+  .tab{
+    flex:1;text-align:center;padding:10px 10px;border-radius:999px;
+    font-size:0.86rem;color:var(--text-muted);cursor:pointer;user-select:none;
+    transition:color .25s;position:relative;z-index:1;
+  }
+  .tab.active{color:var(--accent-ink);font-weight:600;}
+  .tab-indicator{
+    position:absolute;top:4px;bottom:4px;left:4px;
+    width:calc(50% - 4px);
+    background:linear-gradient(135deg, var(--accent-light), var(--accent));
+    border-radius:999px;
+    box-shadow:0 3px 10px rgba(201,111,74,0.35);
+    transition:transform .32s cubic-bezier(.34,1.56,.64,1);
+  }
+  .tab-indicator.pos-1{transform:translateX(100%);}
+
+  .section-note{font-size:0.82rem;color:var(--text-muted);margin:0 0 14px;line-height:1.5;}
+
+  #cardList{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:14px;
+  }
+  @media (max-width:700px){
+    #cardList{grid-template-columns:1fr;}
+  }
+  .card{
+    background:var(--surface);border:2px solid var(--line);border-radius:14px;
+    padding:14px 16px;
+    box-shadow:var(--shadow-sm);
+    transition:box-shadow .2s, border-color .2s, transform .2s;
+    animation:cardIn .35s ease both;
+    display:flex;
+    min-height:158px;
+  }
+  .card:hover{box-shadow:var(--shadow-md);transform:translateY(-1px);}
+  .card.done{border-color:var(--good);background:var(--good-soft);}
+  @keyframes cardIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+  .card-top{width:100%;display:flex;align-items:flex-start;gap:10px;}
+  .card-body{width:100%;display:flex;flex-direction:column;flex:1;}
+  .check{
+    width:24px;height:24px;border-radius:8px;border:2px solid var(--text-muted);
+    flex-shrink:0;margin-top:2px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+    font-size:0.85rem;color:transparent;
+    transition:background .2s, border-color .2s, transform .12s;
+  }
+  .check:hover{border-color:var(--accent);transform:scale(1.08);}
+  .check:active{transform:scale(0.9);}
+  .card.done .check{background:var(--good);border-color:var(--good);color:#fff;animation:checkPop .3s cubic-bezier(.34,1.56,.64,1);}
+  @keyframes checkPop{0%{transform:scale(0.6);}60%{transform:scale(1.2);}100%{transform:scale(1);}}
+
+  .card-body{flex:1;}
+  .name{font-weight:600;font-size:0.98rem;margin:0 0 2px;color:#1F1B15;}
+  .desc{font-size:0.85rem;color:var(--text-muted);line-height:1.5;margin:2px 0 10px;}
+  .controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:auto;min-height:40px;}
+  .timer{
+    font-family:'IBM Plex Mono',monospace;font-size:1.15rem;font-weight:600;
+    color:var(--accent);min-width:52px;transition:color .3s;
+  }
+  .timer.running{animation:pulse 1s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.55;}}
+
+  .btn{
+    background:var(--surface-alt);border:2px solid var(--line);color:var(--text);
+    padding:7px 14px;border-radius:9px;font-size:0.8rem;cursor:pointer;
+    font-family:inherit;font-weight:500;
+    transition:transform .12s cubic-bezier(.34,1.56,.64,1), box-shadow .15s, border-color .15s, background .15s;
+    position:relative;outline:none;-webkit-tap-highlight-color:transparent;
+  }
+  .btn:hover{border-color:var(--accent);transform:translateY(-1px);box-shadow:var(--shadow-sm);}
+  .btn:active{transform:translateY(0) scale(0.95);}
+  .btn:focus-visible{box-shadow:0 0 0 3px rgba(201,111,74,0.3);}
+  .btn.primary{
+    background:linear-gradient(135deg, var(--accent-light), var(--accent));
+    color:#fff;border-color:transparent;font-weight:600;
+    box-shadow:0 4px 12px rgba(201,111,74,0.3);
+  }
+  .btn.primary:hover{box-shadow:0 6px 16px rgba(201,111,74,0.42);transform:translateY(-2px);}
+  .btn.primary:active{transform:translateY(0) scale(0.95);box-shadow:0 2px 6px rgba(201,111,74,0.3);}
+  .btn.primary:disabled{opacity:0.5;cursor:default;transform:none;box-shadow:none;}
+
+  .playpad{
+    display:flex;align-items:center;gap:6px;
+  }
+  .btn.icon{
+    width:40px;height:40px;padding:0;border:none;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:0.95rem;line-height:1;box-shadow:var(--shadow-sm);
+    transition:transform .15s cubic-bezier(.34,1.56,.64,1), box-shadow .15s, filter .15s;
+  }
+  .btn.icon:hover{transform:translateY(-1px) scale(1.05);box-shadow:var(--shadow-md);}
+  .btn.icon:active{transform:scale(0.9);box-shadow:var(--shadow-sm);filter:brightness(0.95);}
+  .btn.icon:focus-visible{box-shadow:0 0 0 3px rgba(201,111,74,0.35);}
+  .playpad .btn.icon.toggle{
+    background:linear-gradient(135deg, var(--accent-light), var(--accent));
+    color:#fff;font-size:0.85rem;
+    box-shadow:0 4px 10px rgba(201,111,74,0.32);
+  }
+  .playpad .btn.icon.toggle:hover{box-shadow:0 6px 14px rgba(201,111,74,0.42);}
+  .playpad .btn.icon.reset{background:var(--surface-alt);color:var(--text-muted);border:2px solid var(--line);}
+  .playpad .btn.icon.reset:hover{color:var(--accent);border-color:var(--accent);}
+
+  .vidlink{
+    font-size:0.78rem;color:var(--text-muted);text-decoration:none;
+    border-bottom:2px dotted var(--text-muted);margin-left:auto;
+    transition:color .15s, border-color .15s, transform .15s;
+    display:inline-block;
+  }
+  .vidlink:hover{color:var(--accent);border-color:var(--accent);transform:translateX(2px);}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>肩颈背腿放松计划</h1>
+  <p class="subtitle">给久坐打字的你：碎片时间放松和完整全身放松两套动作，都带计时器，做完打勾就行。</p>
+
+  <div class="streakbar">
+    <div class="col"><div class="num" id="streakNum">0</div><div class="lbl">连续天数</div></div>
+    <div class="col"><div class="num" id="todayNum">0</div><div class="lbl">今日已完成</div></div>
+    <div class="col"><div class="num" id="totalNum">0</div><div class="lbl">累计完成次数</div></div>
+  </div>
+
+  <div class="painbox">
+    <div class="pt">右肩胛骨内侧痛点，单独处理</div>
+    <p>大概率是菱形肌或肩胛提肌的激痛点。用网球或按摩球贴墙，顶在痛点上，找到最痛的位置，深呼吸停留三十到六十秒，感觉酸胀但能忍受即可，不要顶到剧痛。一天两到三次，配合下面的耸肩画圈和肩胛骨动作一起做效果更好。</p>
+  </div>
+
+  <div class="tabs">
+    <div class="tab-indicator" id="tabIndicator"></div>
+    <div class="tab active" data-tab="quick">碎片放松 · 五到十分钟</div>
+    <div class="tab" data-tab="full">全身放松 · 十到二十分钟</div>
+  </div>
+
+  <p class="section-note" id="sectionNote"></p>
+
+  <div id="cardList"></div>
+</div>
+
+<script>
+const DATA = {
+  quick: [
+    {id:"q1", zh:"耸肩画圈", en:"Shoulder rolls", reps:"向后画大圈十次，再反方向十次", seconds:0, video:null},
+    {id:"q2", zh:"颈部四方向拉伸", en:"Neck stretch, 4 directions", reps:"左右侧屈、前后各一次", seconds:20, video:null},
+    {id:"q3", zh:"门框胸肌拉伸", en:"Doorway pec stretch", reps:"每侧一次", seconds:25, video:"https://www.youtube.com/watch?v=bZ-eaBPOGiM"},
+    {id:"q4", zh:"猫牛式", en:"Cat-cow", reps:"来回八到十次", seconds:0, video:null},
+    {id:"q5", zh:"起身走动，深蹲或踮脚", en:"Walk plus squats or calf raises", reps:"几次即可，顺便活动腿部", seconds:0, video:null}
+  ],
+  full: [
+    {id:"f1", zh:"颈部四方向拉伸加强版", en:"Neck stretch, longer hold", reps:"每个方向", seconds:30, video:null},
+    {id:"f2", zh:"肩颈交界拉伸", en:"Levator scapulae stretch", reps:"每侧", seconds:30, video:"https://www.youtube.com/watch?v=Sl19P-Xi2nY"},
+    {id:"f3", zh:"靠墙天使", en:"Wall angel", reps:"十五到二十次", seconds:0, video:"https://www.youtube.com/watch?v=cvx06snMQ3A"},
+    {id:"f4", zh:"开书式，穿针引线", en:"Thread the needle", reps:"每侧", seconds:30, video:"https://www.youtube.com/watch?v=SkQhKf74nZk"},
+    {id:"f5", zh:"猫牛式加儿童式", en:"Cat-cow plus child pose", reps:"猫牛八到十次，儿童式停留", seconds:45, video:null},
+    {id:"f6", zh:"跪姿弓步拉伸髋屈肌", en:"Kneeling hip flexor lunge", reps:"每侧", seconds:30, video:"https://www.youtube.com/watch?v=KT0HlPGCl6k"},
+    {id:"f7", zh:"站立腘绳肌拉伸", en:"Standing hamstring stretch", reps:"一到两组", seconds:30, video:null},
+    {id:"f8", zh:"靠墙小腿拉伸", en:"Calf stretch against wall", reps:"每侧", seconds:30, video:null}
+  ]
+};
+
+const NOTES = {
+  quick: "每小时起身活动时做一遍，重点松开斜方肌和胸肌，抵消打字时圆肩前引的姿势。",
+  full: "建议睡前或运动前做一次完整版，胸肌和髋屈肌的拉伸容易被忽略，但其实是圆肩和腰背代偿的根源，不要跳过。"
+};
+
+const TAB_ORDER = ["quick", "full"];
+let currentTab = "quick";
+let timers = {};
+let todayKey = new Date().toISOString().slice(0,10);
+let state = { history: {}, total: 0 };
+
+function fmt(s){
+  const m = Math.floor(s/60).toString().padStart(2,"0");
+  const sec = (s%60).toString().padStart(2,"0");
+  return m+":"+sec;
+}
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem("stretch-state");
+    if(raw) state = JSON.parse(raw);
+  }catch(e){ /* no existing state yet */ }
+  if(!state.history) state.history = {};
+  if(typeof state.total !== "number") state.total = 0;
+  render();
+}
+
+function saveState(){
+  try{ localStorage.setItem("stretch-state", JSON.stringify(state)); }
+  catch(e){ console.error("save failed", e); }
+}
+
+function isDoneToday(id){
+  const day = state.history[todayKey];
+  return !!(day && day[id]);
+}
+
+function toggleDone(id){
+  if(!state.history[todayKey]) state.history[todayKey] = {};
+  const day = state.history[todayKey];
+  if(day[id]){
+    delete day[id];
+    state.total = Math.max(0, state.total - 1);
+  } else {
+    day[id] = true;
+    state.total += 1;
+  }
+  saveState();
+  render();
+}
+
+function computeStreak(){
+  let streak = 0;
+  let d = new Date();
+  while(true){
+    const key = d.toISOString().slice(0,10);
+    const day = state.history[key];
+    const hasAny = day && Object.keys(day).length > 0;
+    if(hasAny){ streak++; d.setDate(d.getDate()-1); }
+    else break;
+  }
+  return streak;
+}
+
+function bumpNum(el, value){
+  const changed = el.textContent !== String(value);
+  el.textContent = value;
+  if(changed){
+    el.classList.remove("bump");
+    void el.offsetWidth;
+    el.classList.add("bump");
+  }
+}
+
+function renderStats(){
+  const todayDone = state.history[todayKey] ? Object.keys(state.history[todayKey]).length : 0;
+  bumpNum(document.getElementById("todayNum"), todayDone);
+  bumpNum(document.getElementById("streakNum"), computeStreak());
+  bumpNum(document.getElementById("totalNum"), state.total);
+}
+
+function startTimer(item){
+  if(!timers[item.id]) timers[item.id] = {remaining:item.seconds};
+  const t = timers[item.id];
+  if(t.remaining <= 0) t.remaining = item.seconds;
+  t.running = true;
+  updateTimerDisplay(item.id);
+  t.interval = setInterval(()=>{
+    t.remaining -= 1;
+    updateTimerDisplay(item.id);
+    if(t.remaining <= 0){
+      clearInterval(t.interval);
+      t.running = false;
+      t.remaining = 0;
+      updateTimerDisplay(item.id, true);
+    }
+  }, 1000);
+}
+
+function pauseTimer(id){
+  const t = timers[id];
+  if(t && t.running){ clearInterval(t.interval); t.running = false; }
+  updateTimerDisplay(id);
+}
+
+function toggleTimer(item){
+  const t = timers[item.id];
+  if(t && t.running) pauseTimer(item.id);
+  else startTimer(item);
+}
+
+function resetTimer(item){
+  const t = timers[item.id] || (timers[item.id] = {});
+  if(t.interval) clearInterval(t.interval);
+  t.running = false;
+  t.remaining = item.seconds;
+  updateTimerDisplay(item.id);
+}
+
+function updateTimerDisplay(id, finished){
+  const el = document.querySelector('.timer[data-id="'+id+'"]');
+  const btn = document.querySelector('.toggle[data-id="'+id+'"]');
+  if(!el) return;
+  const t = timers[id];
+  el.textContent = fmt(t ? t.remaining : 0);
+  const running = !!(t && t.running);
+  el.classList.toggle("running", running);
+  if(btn) btn.textContent = running ? "⏸" : "▶";
+  if(finished){ el.style.color = "var(--good)"; setTimeout(()=>{ el.style.color=""; },1500); }
+}
+
+function renderList(){
+  const list = DATA[currentTab];
+  document.getElementById("sectionNote").textContent = NOTES[currentTab];
+  const container = document.getElementById("cardList");
+  container.innerHTML = "";
+  list.forEach((item, idx)=>{
+    const done = isDoneToday(item.id);
+    const card = document.createElement("div");
+    card.className = "card" + (done ? " done" : "");
+    card.style.animationDelay = (idx * 0.04) + "s";
+    const hasTimer = item.seconds > 0;
+    const running = !!(timers[item.id] && timers[item.id].running);
+    card.innerHTML =
+      '<div class="card-top">' +
+        '<div class="check" data-id="'+item.id+'">'+(done ? "✓" : "")+'</div>' +
+        '<div class="card-body">' +
+          '<p class="name">'+item.zh+'</p>' +
+          '<p class="desc">'+item.reps+'</p>' +
+          '<div class="controls">' +
+            (hasTimer ?
+              '<span class="timer" data-id="'+item.id+'">'+fmt(item.seconds)+'</span>' +
+              '<div class="playpad">' +
+                '<button class="btn icon toggle" data-action="toggle" data-id="'+item.id+'">'+(running ? "⏸" : "▶")+'</button>' +
+                '<button class="btn icon reset" data-action="reset" data-id="'+item.id+'">🔄</button>' +
+              '</div>'
+              : "") +
+            (item.video ? '<a class="vidlink" href="'+item.video+'" target="_blank" rel="noopener">▶ 教学视频</a>' : "") +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    container.appendChild(card);
+  });
+
+  container.querySelectorAll(".check").forEach(el=>{
+    el.addEventListener("click", ()=> toggleDone(el.dataset.id));
+  });
+  container.querySelectorAll('[data-action="toggle"]').forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      const item = list.find(i=>i.id===btn.dataset.id);
+      toggleTimer(item);
+    });
+  });
+  container.querySelectorAll('[data-action="reset"]').forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      const item = list.find(i=>i.id===btn.dataset.id);
+      resetTimer(item);
+    });
+  });
+}
+
+function render(){
+  renderStats();
+  renderList();
+}
+
+document.querySelectorAll(".tab").forEach(tab=>{
+  tab.addEventListener("click", ()=>{
+    document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+    tab.classList.add("active");
+    currentTab = tab.dataset.tab;
+    const idx = TAB_ORDER.indexOf(currentTab);
+    document.getElementById("tabIndicator").classList.toggle("pos-1", idx === 1);
+    renderList();
+  });
+});
+
+loadState();
+</script>
+</body>
+</html>
