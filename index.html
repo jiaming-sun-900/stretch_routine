@@ -24,6 +24,7 @@
     --shadow-md:0 6px 16px rgba(43,38,32,0.08);
     --shadow-lg:0 12px 28px rgba(43,38,32,0.14);
   }
+  html{font-size:clamp(16px, 14px + 0.12vw, 18.5px);}
   *{box-sizing:border-box;}
   body{
     margin:0;
@@ -31,26 +32,34 @@
       radial-gradient(circle at 15% 0%, #F9EEE1 0%, transparent 45%),
       radial-gradient(circle at 100% 20%, #EFEADA 0%, transparent 40%),
       var(--bg);
+    background-attachment:fixed;
     color:var(--text);
     font-family:'IBM Plex Sans', -apple-system, sans-serif;
-    padding:28px 16px 60px;
+    padding:clamp(20px, 4vh, 48px) clamp(16px, 4vw, 40px);
     -webkit-font-smoothing:antialiased;
     min-height:100vh;
+    min-height:100dvh;
+    display:flex;
   }
-  .wrap{max-width:1000px;margin:0 auto;}
+  /* margin:auto 而不是 justify-content:center —— 内容比视口高时不会裁掉顶部 */
+  .wrap{
+    width:100%;
+    max-width:clamp(1100px, 62vw, 1560px);
+    margin:auto;
+  }
   h1{
     font-family:'Fraunces', serif;
     font-weight:600;
-    font-size:2.1rem;
-    margin:0 0 4px;
+    font-size:clamp(1.6rem, 1.15rem + 1.6vw, 2.4rem);
+    margin:0 0 clamp(14px, 2.2vh, 24px);
     letter-spacing:0.2px;
     color:#1F1B15;
+    text-align:center;
   }
-  .subtitle{color:var(--text);font-size:0.875rem;margin:0 0 22px;line-height:1.5;}
 
   .painbox{
     background:var(--pain-soft);border:2px solid var(--pain);
-    border-radius:14px;padding:14px 16px;margin-bottom:22px;
+    border-radius:14px;padding:14px 16px;margin-bottom:clamp(14px, 2.2vh, 22px);
   }
   .painbox .pt{font-weight:600;color:var(--pain);margin-bottom:6px;font-size:1rem;}
   .painbox p{margin:0 0 8px;font-size:0.875rem;line-height:1.55;color:var(--text);}
@@ -59,7 +68,7 @@
   .tabs{display:flex;gap:4px;background:var(--surface);border:2px solid var(--line);border-radius:999px;padding:4px;margin-bottom:20px;box-shadow:var(--shadow-sm);position:relative;}
   .tab{
     flex:1;text-align:center;padding:10px 10px;border-radius:999px;
-    font-size:0.9rem;color:var(--text);cursor:pointer;user-select:none;
+    font-size:clamp(0.8rem, 0.72rem + 0.3vw, 0.9rem);color:var(--text);cursor:pointer;user-select:none;
     transition:color .25s;position:relative;z-index:1;
   }
   .tab.active{color:var(--accent-ink);font-weight:600;}
@@ -73,15 +82,17 @@
   }
   .tab-indicator.pos-1{transform:translateX(100%);}
 
-  .section-note{font-size:0.875rem;color:var(--text);margin:0 0 14px;line-height:1.5;}
+  /* 只在高度动画进行时裁剪，平时不裁，免得卡片阴影被切掉 */
+  #panel.swapping{overflow:hidden;}
+  #panel.swapping .card:hover{transform:none;}
 
+  .section-note{font-size:0.875rem;color:var(--text);margin:0 0 14px;line-height:1.5;text-align:center;}
+
+  /* auto-fit 让列数跟着可用宽度走：窄屏 1 列，中屏 2 列，宽屏 3 列 */
   #cardList{
     display:grid;
-    grid-template-columns:repeat(3, 1fr);
-    gap:14px;
-  }
-  @media (max-width:700px){
-    #cardList{grid-template-columns:1fr;}
+    grid-template-columns:repeat(auto-fit, minmax(clamp(240px, 28vw, 320px), 1fr));
+    gap:clamp(10px, 1.2vw, 16px);
   }
   .card{
     background:var(--surface);border:2px solid var(--line);border-radius:14px;
@@ -90,7 +101,7 @@
     transition:box-shadow .2s, border-color .2s, transform .2s;
     animation:cardIn .35s ease both;
     display:flex;
-    min-height:158px;
+    min-height:clamp(130px, 17vh, 158px);
     cursor:pointer;
   }
   .card:hover{box-shadow:var(--shadow-md);transform:translateY(-1px);border-color:var(--good);}
@@ -110,7 +121,6 @@
   .card.done .check{background:var(--good);border-color:var(--good);color:#fff;animation:checkPop .3s cubic-bezier(.34,1.56,.64,1);}
   @keyframes checkPop{0%{transform:scale(0.6);}60%{transform:scale(1.2);}100%{transform:scale(1);}}
 
-  .card-body{flex:1;}
   .name{font-weight:600;font-size:1rem;margin:0 0 2px;color:#1F1B15;}
   .desc{font-size:0.875rem;color:var(--text);line-height:1.5;margin:2px 0 10px;}
   .controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:auto;min-height:40px;}
@@ -147,7 +157,14 @@
   .btn.danger:hover{box-shadow:0 6px 16px rgba(181,83,58,0.4);transform:translateY(-2px);}
   .btn.danger:active{transform:translateY(0) scale(0.95);box-shadow:0 2px 6px rgba(181,83,58,0.28);}
 
-  .clearwrap{display:flex;justify-content:center;margin-top:26px;}
+  .btn.danger.armed{
+    background:linear-gradient(135deg, var(--pain), #8F3D28);
+    box-shadow:0 6px 16px rgba(181,83,58,0.45);
+    animation:armedPulse 1s ease-in-out infinite;
+  }
+  @keyframes armedPulse{0%,100%{opacity:1;}50%{opacity:0.75;}}
+
+  .clearwrap{display:flex;justify-content:center;margin-top:clamp(18px, 2.6vh, 26px);}
   .btn.large{padding:12px 32px;font-size:0.95rem;border-radius:12px;}
 
   .playpad{
@@ -179,13 +196,15 @@
   }
   .vidlink:hover{color:var(--accent);border-color:var(--accent);transform:translateX(2px);}
 
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;}
+  }
 </style>
 </head>
 <body>
 <div class="wrap">
 
   <h1>肩颈背腿放松计划</h1>
-  <p class="subtitle">给久坐打字的你：碎片时间放松和完整全身放松两套动作，都带计时器，做完打勾就行。</p>
 
   <div class="painbox">
     <div class="pt">右肩胛骨内侧痛点，单独处理</div>
@@ -198,9 +217,10 @@
     <div class="tab" data-tab="full">全身放松 · 十到二十分钟</div>
   </div>
 
-  <p class="section-note" id="sectionNote"></p>
-
-  <div id="cardList"></div>
+  <div id="panel">
+    <p class="section-note" id="sectionNote"></p>
+    <div id="cardList"></div>
+  </div>
 
   <div class="clearwrap">
     <button class="btn danger large" id="clearTabBtn">一键清空</button>
@@ -239,8 +259,7 @@ let timers = {};
 function localDateKey(d){
   return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
 }
-let todayKey = localDateKey(new Date());
-let state = { history: {} };
+let state = { date: localDateKey(new Date()), done: {} };
 
 function fmt(s){
   const m = Math.floor(s/60).toString().padStart(2,"0");
@@ -251,10 +270,21 @@ function fmt(s){
 function loadState(){
   try{
     const raw = localStorage.getItem("stretch-state");
-    if(raw) state = JSON.parse(raw);
-  }catch(e){ /* no existing state yet */ }
-  if(!state.history) state.history = {};
+    const saved = raw ? JSON.parse(raw) : null;
+    if(saved && saved.date && saved.done) state = saved;
+  }catch(e){ /* 没有旧记录，或是已废弃的旧格式，直接从空开始 */ }
+  rollDate();
   render();
+}
+
+// 跨零点后清空，打勾只保留当天
+function rollDate(){
+  const key = localDateKey(new Date());
+  if(state.date !== key){
+    state.date = key;
+    state.done = {};
+    saveState();
+  }
 }
 
 function saveState(){
@@ -263,17 +293,15 @@ function saveState(){
 }
 
 function isDoneToday(id){
-  const day = state.history[todayKey];
-  return !!(day && day[id]);
+  return !!state.done[id];
 }
 
 function toggleDone(id){
-  if(!state.history[todayKey]) state.history[todayKey] = {};
-  const day = state.history[todayKey];
-  if(day[id]) delete day[id];
-  else day[id] = true;
+  rollDate();
+  if(state.done[id]) delete state.done[id];
+  else state.done[id] = true;
   saveState();
-  setCardDone(id, !!day[id]);
+  setCardDone(id, !!state.done[id]);
 }
 
 function setCardDone(id, done){
@@ -335,12 +363,9 @@ function updateTimerDisplay(id, finished){
 }
 
 function clearTabToday(){
-  const list = DATA[currentTab];
-  const day = state.history[todayKey];
-  if(!day) return;
-  list.forEach(item=>{
-    if(day[item.id]){
-      delete day[item.id];
+  DATA[currentTab].forEach(item=>{
+    if(state.done[item.id]){
+      delete state.done[item.id];
       setCardDone(item.id, false);
     }
   });
@@ -401,24 +426,88 @@ function renderList(){
       resetTimer(item);
     });
   });
+
+  balanceColumns();
+}
+
+// 末行只剩一张卡会很空，所以在装得下的列数里挑一个余数不为 1 的
+function balanceColumns(){
+  const grid = document.getElementById("cardList");
+  const n = DATA[currentTab].length;
+  const MIN = 240, GAP = 16;
+  let cols = Math.floor((grid.clientWidth + GAP) / (MIN + GAP));
+  cols = Math.max(1, Math.min(cols, 4, n));
+  // 两列以内出现单张尾卡问题不大，再降就太窄了
+  while(cols > 2 && n % cols === 1) cols--;
+  grid.style.gridTemplateColumns = "repeat(" + cols + ", 1fr)";
 }
 
 function render(){
   renderList();
 }
 
-document.querySelectorAll(".tab").forEach(tab=>{
-  tab.addEventListener("click", ()=>{
-    document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
-    tab.classList.add("active");
-    currentTab = tab.dataset.tab;
-    const idx = TAB_ORDER.indexOf(currentTab);
-    document.getElementById("tabIndicator").classList.toggle("pos-1", idx === 1);
-    renderList();
-  });
+let resizeTimer;
+window.addEventListener("resize", ()=>{
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(balanceColumns, 120);
 });
 
-document.getElementById("clearTabBtn").addEventListener("click", clearTabToday);
+let swapAnim = null;
+
+// 两个标签页卡片数量不同，直接换会让整页高度突变、标题跳一下。
+// 这里量出切换前后的高度，把中间补成一段动画。
+function switchTab(next){
+  if(next === currentTab) return;
+
+  document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active", t.dataset.tab === next));
+  document.getElementById("tabIndicator").classList.toggle("pos-1", TAB_ORDER.indexOf(next) === 1);
+  disarmClear();
+
+  const panel = document.getElementById("panel");
+  // 上一段动画还没跑完时，量到的是它当前的中间高度，接着animate即可平滑衔接
+  const from = panel.getBoundingClientRect().height;
+  if(swapAnim) swapAnim.cancel();
+
+  currentTab = next;
+  renderList();
+
+  const to = panel.getBoundingClientRect().height;
+  if(Math.abs(to - from) < 1) return;
+
+  panel.classList.add("swapping");
+  swapAnim = panel.animate(
+    [{height: from + "px"}, {height: to + "px"}],
+    {duration: 420, easing: "cubic-bezier(.22,.61,.36,1)"}
+  );
+  const done = ()=>{ panel.classList.remove("swapping"); swapAnim = null; };
+  swapAnim.onfinish = done;
+  swapAnim.oncancel = done;
+}
+
+document.querySelectorAll(".tab").forEach(tab=>{
+  tab.addEventListener("click", ()=> switchTab(tab.dataset.tab));
+});
+
+const clearBtn = document.getElementById("clearTabBtn");
+let clearArmed = 0;
+
+function disarmClear(){
+  clearTimeout(clearArmed);
+  clearArmed = 0;
+  clearBtn.classList.remove("armed");
+  clearBtn.textContent = "一键清空";
+}
+
+clearBtn.addEventListener("click", ()=>{
+  if(clearArmed){
+    disarmClear();
+    clearTabToday();
+    return;
+  }
+  clearBtn.classList.add("armed");
+  clearBtn.textContent = "再点一次确认清空";
+  clearArmed = setTimeout(disarmClear, 3000);
+});
 
 loadState();
 </script>
