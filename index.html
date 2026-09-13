@@ -59,11 +59,27 @@
 
   .painbox{
     background:var(--pain-soft);border:2px solid var(--pain);
-    border-radius:14px;padding:14px 16px;margin-bottom:clamp(14px, 2.2vh, 22px);
+    border-radius:14px;margin-bottom:clamp(14px, 2.2vh, 22px);
+    overflow:hidden;
   }
-  .painbox .pt{font-weight:600;color:var(--pain);margin-bottom:6px;font-size:1rem;}
-  .painbox p{margin:0 0 8px;font-size:0.875rem;line-height:1.55;color:var(--text);}
-  .painbox p:last-child{margin-bottom:0;}
+  .painbox-head{
+    width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;
+    background:none;border:none;padding:11px 16px;cursor:pointer;
+    font-family:inherit;text-align:left;
+    transition:background .15s;-webkit-tap-highlight-color:transparent;
+  }
+  .painbox-head:hover{background:rgba(181,83,58,0.07);}
+  .painbox-head:focus-visible{outline:none;background:rgba(181,83,58,0.1);}
+  .painbox .pt{font-weight:600;color:var(--pain);font-size:1rem;}
+  .chev{
+    color:var(--pain);font-size:0.75rem;flex-shrink:0;
+    transition:transform .3s cubic-bezier(.22,.61,.36,1);
+  }
+  .painbox.open .chev{transform:rotate(180deg);}
+  /* 收起时靠 height:0 + overflow:hidden 裁掉，所以内边距放在 p 上而不是容器上 */
+  .painbox-body{overflow:hidden;}
+  .painbox:not(.open) .painbox-body{height:0;}
+  .painbox-body p{margin:0;padding:0 16px 13px;font-size:0.875rem;line-height:1.55;color:var(--text);}
 
   .tabs{display:flex;gap:4px;background:var(--surface);border:2px solid var(--line);border-radius:999px;padding:4px;margin-bottom:20px;box-shadow:var(--shadow-sm);position:relative;}
   .tab{
@@ -103,6 +119,7 @@
     display:flex;
     min-height:clamp(130px, 17vh, 158px);
     cursor:pointer;
+    position:relative;
   }
   .card:hover{box-shadow:var(--shadow-md);transform:translateY(-1px);border-color:var(--good);}
   .card.done{border-color:var(--good);background:var(--good-soft);}
@@ -188,13 +205,17 @@
   .playpad .btn.icon.reset{background:var(--surface-alt);color:var(--text-muted);border:2px solid var(--line);}
   .playpad .btn.icon.reset:hover{color:var(--accent);border-color:var(--accent);}
 
+  /* 固定锚在卡片右下角：不参与 .controls 的换行，位置不再忽高忽低 */
+  .card.has-video{padding-bottom:46px;}
   .vidlink{
-    font-size:0.875rem;color:var(--text);text-decoration:none;
-    border-bottom:2px dotted var(--text);margin-left:auto;
+    position:absolute;right:16px;bottom:14px;
+    font-size:0.875rem;color:var(--text-muted);text-decoration:none;
+    border-bottom:2px dotted var(--line);
     transition:color .15s, border-color .15s, transform .15s;
-    display:inline-block;
+    display:inline-flex;align-items:center;gap:4px;line-height:1.3;
   }
   .vidlink:hover{color:var(--accent);border-color:var(--accent);transform:translateX(2px);}
+  .vidlink:focus-visible{outline:none;color:var(--accent);border-color:var(--accent);box-shadow:0 3px 0 -1px var(--accent);}
 
   @media (prefers-reduced-motion: reduce){
     *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;}
@@ -206,9 +227,14 @@
 
   <h1>肩颈背腿放松计划</h1>
 
-  <div class="painbox">
-    <div class="pt">右肩胛骨内侧痛点，单独处理</div>
-    <p>大概率是菱形肌或肩胛提肌的激痛点。用网球或按摩球贴墙，顶在痛点上，找到最痛的位置，深呼吸停留三十到六十秒，感觉酸胀但能忍受即可，不要顶到剧痛。一天两到三次，配合下面的耸肩画圈和肩胛骨动作一起做效果更好。</p>
+  <div class="painbox" id="painBox">
+    <button class="painbox-head" id="painToggle" aria-expanded="false" aria-controls="painBody">
+      <span class="pt">右肩胛骨内侧痛点，单独处理</span>
+      <span class="chev" aria-hidden="true">▾</span>
+    </button>
+    <div class="painbox-body" id="painBody">
+      <p>大概率是菱形肌或肩胛提肌的激痛点。用网球或按摩球贴墙，顶在痛点上，找到最痛的位置，深呼吸停留三十到六十秒，感觉酸胀但能忍受即可，不要顶到剧痛。一天两到三次，配合下面的耸肩画圈和肩胛骨动作一起做效果更好。</p>
+    </div>
   </div>
 
   <div class="tabs">
@@ -274,6 +300,7 @@ function loadState(){
     if(saved && saved.date && saved.done) state = saved;
   }catch(e){ /* 没有旧记录，或是已废弃的旧格式，直接从空开始 */ }
   rollDate();
+  applyPain(state.painOpen === true, false);
   render();
 }
 
@@ -380,7 +407,7 @@ function renderList(){
   list.forEach((item, idx)=>{
     const done = isDoneToday(item.id);
     const card = document.createElement("div");
-    card.className = "card" + (done ? " done" : "");
+    card.className = "card" + (done ? " done" : "") + (item.video ? " has-video" : "");
     card.dataset.id = item.id;
     card.style.animationDelay = (idx * 0.04) + "s";
     const hasTimer = item.seconds > 0;
@@ -401,10 +428,10 @@ function renderList(){
                 '<button class="btn icon reset" data-action="reset" data-id="'+item.id+'">🔄</button>' +
               '</div>'
               : "") +
-            (item.video ? '<a class="vidlink" href="'+item.video+'" target="_blank" rel="noopener">▶ 教学视频</a>' : "") +
           '</div>' +
         '</div>' +
-      '</div>';
+      '</div>' +
+      (item.video ? '<a class="vidlink" href="'+item.video+'" target="_blank" rel="noopener">▶ 教学视频</a>' : "");
     container.appendChild(card);
   });
 
@@ -452,6 +479,39 @@ window.addEventListener("resize", ()=>{
   resizeTimer = setTimeout(balanceColumns, 120);
 });
 
+// 页面是居中布局，任何高度突变都会把上下内容一起顶动，所以统一走这段过渡
+function animateHeight(el, from, to, onDone){
+  if(Math.abs(to - from) < 1){ if(onDone) onDone(); return null; }
+  const anim = el.animate(
+    [{height: from + "px"}, {height: to + "px"}],
+    {duration: 420, easing: "cubic-bezier(.22,.61,.36,1)"}
+  );
+  if(onDone){ anim.onfinish = onDone; anim.oncancel = onDone; }
+  return anim;
+}
+
+const painBox = document.getElementById("painBox");
+const painBody = document.getElementById("painBody");
+const painToggle = document.getElementById("painToggle");
+let painAnim = null;
+
+function applyPain(open, animate){
+  const from = animate ? painBody.getBoundingClientRect().height : 0;
+  if(painAnim) painAnim.cancel();
+  painBox.classList.toggle("open", open);
+  painToggle.setAttribute("aria-expanded", open ? "true" : "false");
+  if(!animate) return;
+  const to = painBody.getBoundingClientRect().height;
+  painAnim = animateHeight(painBody, from, to, ()=>{ painAnim = null; });
+}
+
+painToggle.addEventListener("click", ()=>{
+  const open = !painBox.classList.contains("open");
+  state.painOpen = open;
+  saveState();
+  applyPain(open, true);
+});
+
 let swapAnim = null;
 
 // 两个标签页卡片数量不同，直接换会让整页高度突变、标题跳一下。
@@ -473,15 +533,11 @@ function switchTab(next){
 
   const to = panel.getBoundingClientRect().height;
   if(Math.abs(to - from) < 1) return;
-
   panel.classList.add("swapping");
-  swapAnim = panel.animate(
-    [{height: from + "px"}, {height: to + "px"}],
-    {duration: 420, easing: "cubic-bezier(.22,.61,.36,1)"}
-  );
-  const done = ()=>{ panel.classList.remove("swapping"); swapAnim = null; };
-  swapAnim.onfinish = done;
-  swapAnim.oncancel = done;
+  swapAnim = animateHeight(panel, from, to, ()=>{
+    panel.classList.remove("swapping");
+    swapAnim = null;
+  });
 }
 
 document.querySelectorAll(".tab").forEach(tab=>{
